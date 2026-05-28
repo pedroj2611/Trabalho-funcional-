@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clínica Medical — Sistema de Gestão</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     TELA DE LOGIN
+══════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-bg"></div>
+  <div class="login-card">
+
+    <div class="login-logo">
+      <div class="login-logo-icon">🏥</div>
+      <div class="login-logo-text">
+        <h2>Clínica<span style="color:var(--teal-light)">Medical</span></h2>
+        <p>Sistema de Gestão</p>
+      </div>
+    </div>
+
+    <h1 class="login-title">Bem-vindo</h1>
+    <p class="login-sub">Acesse o painel administrativo</p>
+
+    <div class="l-error" id="loginError">⚠️ Login ou senha inválidos!</div>
+
+    <div class="l-group">
+      <label class="l-label">Usuário</label>
+      <input class="l-input" type="text" id="loginUser" placeholder="admin" autocomplete="off">
+    </div>
+
+    <div class="l-group">
+      <label class="l-label">Senha</label>
+      <input class="l-input" type="password" id="loginPass" placeholder="••••••">
+    </div>
+
+    <button class="l-btn" onclick="doLogin()">Entrar no Sistema →</button>
+
+    <div class="l-hint">
+      <p>Credenciais de acesso:</p>
+      <code>Login: admin</code>
+      <code>Senha: admin</code>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════ -->
+<div id="appShell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">
+        <div class="sb-logo-icon">🏥</div>
+        <div class="sb-logo-text">Clínica<span>Medical</span></div>
+      </div>
+    </div>
+
+    <nav class="sb-nav">
+      <div class="sb-section">Principal</div>
+      <div class="nav-item active" onclick="navTo('dashboard', this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="navTo('pacientes', this)">
+        <span class="nav-icon">👥</span> Pacientes
+      </div>
+      <div class="nav-item" onclick="navTo('atendimentos', this)">
+        <span class="nav-icon">🩺</span> Atendimentos
+      </div>
+      <div class="sb-section">Dados</div>
+      <div class="nav-item" onclick="navTo('relatorios', this)">
+        <span class="nav-icon">📈</span> Relatórios SQL
+      </div>
+      <div class="nav-item" onclick="navTo('configuracoes', this)">
+        <span class="nav-icon">⚙️</span> Configurações
+      </div>
+    </nav>
+
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sbAvatarText">A</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sbUserName">Administrador</div>
+          <div class="sb-user-role">admin</div>
+        </div>
+        <button class="btn-logout" onclick="doLogout()" title="Sair">⏻</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <h1 class="topbar-title" id="topTitle">Dashboard</h1>
+      <div class="topbar-right">
+        <span class="topbar-badge" id="topDate"></span>
+      </div>
+    </div>
+
+    <!-- ── PAGE: DASHBOARD ── -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-row">
+        <div class="stat-card" style="--stat-color:#1a56db">
+          <div class="stat-icon">👥</div>
+          <div class="stat-num"  id="stTotal">0</div>
+          <div class="stat-label">Pacientes cadastrados</div>
+        </div>
+        <div class="stat-card" style="--stat-color:#10b981">
+          <div class="stat-icon">🩺</div>
+          <div class="stat-num"  id="stConsultas">0</div>
+          <div class="stat-label">Consultas realizadas</div>
+        </div>
+        <div class="stat-card" style="--stat-color:#f59e0b">
+          <div class="stat-icon">🤒</div>
+          <div class="stat-num"  id="stSintomas">0</div>
+          <div class="stat-label">Sintomas diferentes</div>
+        </div>
+        <div class="stat-card" style="--stat-color:#8b5cf6">
+          <div class="stat-icon">📋</div>
+          <div class="stat-num"  id="stHoje">0</div>
+          <div class="stat-label">Atendimentos hoje</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">👥 Pacientes Recentes</div>
+          </div>
+          <div class="card-body" id="dashPacientes"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🩺 Últimos Atendimentos</div>
+          </div>
+          <div class="card-body" id="dashAtendimentos"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: PACIENTES ── -->
+    <div class="page" id="page-pacientes">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">👥 Lista de Pacientes</div>
+          <button class="btn btn-primary" onclick="abrirModalNovoPaciente()">+ Novo Paciente</button>
+        </div>
+        <div class="card-body">
+          <div class="p-grid" id="pacientesGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: ATENDIMENTOS ── -->
+    <div class="page" id="page-atendimentos">
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-header">
+          <div class="card-title">🩺 Registrar Novo Atendimento</div>
+        </div>
+        <div class="card-body">
+          <div class="form-row">
+            <div class="fg">
+              <label>Nome do Paciente</label>
+              <input type="text" id="ateNome" placeholder="Ex: Maria Silva">
+            </div>
+            <div class="fg">
+              <label>Sintoma</label>
+              <input type="text" id="ateSintoma" placeholder="Ex: Febre, Dor de cabeça...">
+            </div>
+          </div>
+          <div style="display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" onclick="registrarAtendimento()">✓ Salvar Atendimento</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📋 Histórico de Atendimentos</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Paciente</th>
+                <th>Sintoma</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody id="ateHistorico"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: RELATÓRIOS ── -->
+    <div class="page" id="page-relatorios">
+      <div class="pdf-strip">
+        <div class="pdf-strip-text">
+          <h4>📄 Exportar Relatório Completo</h4>
+          <p>Gera PDF com todos os dados: pacientes, consultas e análises.</p>
+        </div>
+        <button class="btn btn-primary" onclick="gerarPDF()">⬇ Gerar PDF</button>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🗄️ Consultas SQL</div>
+        </div>
+        <div class="card-body">
+          <div class="rel-grid">
+            <button class="rel-btn" onclick="runQuery('etapa6')">
+              <span class="rel-icon">📋</span>
+              <span>JOIN Básico</span>
+              <span style="font-size:11px;font-weight:400;color:var(--muted)">Paciente + Consulta</span>
+            </button>
+            <button class="rel-btn" onclick="runQuery('etapa7')">
+              <span class="rel-icon">🗄️</span>
+              <span>JOIN Completo</span>
+              <span style="font-size:11px;font-weight:400;color:var(--muted)">Paciente + Sintoma</span>
+            </button>
+            <button class="rel-btn" onclick="runQuery('etapa8')">
+              <span class="rel-icon">🌡️</span>
+              <span>Filtro: Febre</span>
+              <span style="font-size:11px;font-weight:400;color:var(--muted)">WHERE sintoma='Febre'</span>
+            </button>
+            <button class="rel-btn" onclick="runQuery('etapa9')">
+              <span class="rel-icon">📊</span>
+              <span>Total por Paciente</span>
+              <span style="font-size:11px;font-weight:400;color:var(--muted)">GROUP BY paciente</span>
+            </button>
+            <button class="rel-btn green" onclick="runQuery('etapa10')">
+              <span class="rel-icon">⭐</span>
+              <span>Sintoma Frequente</span>
+              <span style="font-size:11px;font-weight:400;color:var(--muted)">ORDER BY COUNT DESC</span>
+            </button>
+            <button class="rel-btn" onclick="runQuery('todos')">
+              <span class="rel-icon">📁</span>
+              <span>Todos Pacientes</span>
+              <span style="font-size:11px;font-weight:400;color:var(--muted)">SELECT * FROM pacientes</span>
+            </button>
+          </div>
+
+          <div>
+            <div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
+              📟 Resultado
+            </div>
+            <div class="code-box" id="codeResult">// Clique em um relatório acima para executar...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: CONFIGURAÇÕES ── -->
+    <div class="page" id="page-configuracoes">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">⚙️ Configurações do Sistema</div>
+        </div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+            <div style="background:var(--surface2);border-radius:12px;padding:20px;border:1px solid var(--border)">
+              <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">Sobre o Sistema</div>
+              <div style="font-size:15px;font-weight:700;margin-bottom:6px">Clínica Medical v2.0</div>
+              <div style="font-size:13px;color:var(--muted);margin-bottom:4px">Sistema de Gestão Clínica</div>
+              <div style="font-size:13px;color:var(--muted)">Banco: SQLite (in-memory)</div>
+              <div style="margin-top:12px"><span class="badge badge-green">● Online</span></div>
+            </div>
+            <div style="background:var(--surface2);border-radius:12px;padding:20px;border:1px solid var(--border)">
+              <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">Usuário Logado</div>
+              <div id="cfgUserInfo"></div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px;background:var(--surface2);border-radius:12px;padding:20px;border:1px solid var(--border)">
+            <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px">Tecnologias Utilizadas</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <span class="badge badge-blue">Node.js + Express</span>
+              <span class="badge badge-blue">TypeScript</span>
+              <span class="badge badge-green">SQLite3</span>
+              <span class="badge badge-amber">JWT Auth</span>
+              <span class="badge badge-blue">bcrypt</span>
+              <span class="badge badge-green">REST API</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAIS
+══════════════════════════════════════════ -->
+
+<!-- Modal: Editar Paciente -->
+<div class="overlay" id="overlayEdit">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>✏️ Editar Paciente</h3>
+      <button class="btn btn-ghost" onclick="fecharModal('overlayEdit')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg" style="margin-bottom:0">
+        <label>Novo Nome</label>
+        <input type="text" id="editNomeInput" placeholder="Digite o novo nome">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="fecharModal('overlayEdit')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarEdicao()">Salvar Alterações</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Excluir Paciente -->
+<div class="overlay" id="overlayDelete">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>🗑️ Excluir Paciente</h3>
+      <button class="btn btn-ghost" onclick="fecharModal('overlayDelete')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:10px">Tem certeza que deseja remover <strong id="deleteNomeTxt"></strong>?</p>
+      <p style="font-size:13px;color:var(--red)">⚠️ Todas as consultas deste paciente também serão removidas!</p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="fecharModal('overlayDelete')">Cancelar</button>
+      <button class="btn btn-danger"  onclick="confirmarExclusao()">Sim, Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Novo Paciente -->
+<div class="overlay" id="overlayNovoPaciente">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>👤 Novo Paciente</h3>
+      <button class="btn btn-ghost" onclick="fecharModal('overlayNovoPaciente')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fg" style="margin-bottom:0">
+        <label>Nome Completo</label>
+        <input type="text" id="novoPacienteNome" placeholder="Ex: João da Silva">
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="fecharModal('overlayNovoPaciente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarNovoPaciente()">Cadastrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast de notificação -->
+<div class="toast" id="toast"></div>
+
+<!-- ── Scripts ── -->
+<script src="js/app.js"></script>
+
+</body>
+</html>
