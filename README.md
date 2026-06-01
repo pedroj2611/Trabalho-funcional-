@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏥 Clínica Medical — Sistema de Gestão
 
 Sistema de gestão clínica com autenticação, gerenciamento de pacientes, atendimentos e relatórios SQL.
@@ -62,3 +63,7 @@ npm run watch
 
 ---
 Autores: **Pedro J.** / **Brendi** · v2.0
+=======
+# Trabalho-funcional-
+Esse é a versão do beta que esta funcionando 
+>>>>>>> Pedro
