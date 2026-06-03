@@ -29,6 +29,7 @@ clinica-medical/
 Abra o arquivo `public/index.html` no navegador.
 
 ### Opção 2 — Servidor local
+node server.js
 ```bash
 npm install
 npm start
@@ -67,3 +68,8 @@ Autores: **Pedro J.** / **Brendi** · v2.0
 # Trabalho-funcional-
 Esse é a versão do beta que esta funcionando 
 >>>>>>> Pedro
+
+
+
+                
+                
