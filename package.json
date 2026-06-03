@@ -1,0 +1,17 @@
+{
+  "name": "clinica-medical",
+  "version": "2.0.0",
+  "description": "Sistema de Gestão Clínica — Frontend com TypeScript",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "npx serve public"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "serve": "^14.2.0"
+  },
+  "keywords": ["clinica", "medical", "typescript", "gestao"],
+  "author": "Pedro J. / Brendi",
+  "license": "MIT"
+}
